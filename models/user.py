@@ -1,16 +1,17 @@
 #!/usr/bin/python3
-"""To define the class user."""
+"""
+User_Class inheriting from the Base_Model
+"""
+
 from models.base_model import BaseModel
 
+
 class User(BaseModel):
-    """To represent the user
-
-    Attributes:
-        email (str): user's email
-        password (str): the password of the user
-        first_name (str): user's first name
-        last_name (str): user's last name"""
-
+    """
+    Outline  for a User object
+    Will be using FileStorage(ie the public attributes) in engine
+    folder to manage serialization and deserialization of User
+    """
     email = ""
     password = ""
     first_name = ""

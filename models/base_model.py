@@ -1,48 +1,54 @@
 #!/usr/bin/python3
 """
-Defines the BaseModel class.
+Defines the base model
 """
-import models
-from uuid import uuid4
+import uuid
 from datetime import datetime
+
 
 class BaseModel:
     """
-    Represents the BaseModel.
+    To defines attributes and methods for other classes
+    And links Base_Model and File_Storaga via variable storage
     """
     def __init__(self, *args, **kwargs):
-        """Initialize a new BaseModel
-        Arguments:
-            *args (any): Unused
-            **kwargs (dict): Key/value pairs of attributes."""
-        tformat = "%Y-%m-%dT%H:%M:%S.%f"
-        self.id = str(uuid4())
-        self.created_at = datetime.today()
-        self.updated_at = datetime.today()
-        if len(kwargs) != 0:
-            for key, val in kwargs.items():
-                if key == "created_at" or key == "updated_at":
-                    setattr(self, key, datetime.strptime(val, tformat))
-                else:
-                    setattr(self, key, val)
+        """
+        Fnctn to initializes an instance
+        """
+        if len(kwargs) != 0 and kwargs is not None:
+            if '__class__' in kwargs:
+                del kwargs['__class__']
+            kwargs['created_at'] = datetime.fromisoformat(kwargs['created_at'])
+            kwargs['updated_at'] = datetime.fromisoformat(kwargs['updated_at'])
+            self.__dict__.update(kwargs)
         else:
-            models.storage.add_new(self)
-
-    def save(self):
-        """To update updated_at with the current datetime."""
-        self.updated_at = datetime.today()
-        models.storage.save_data()
-
-    def to_dict(self):
-        """To return dictionary of the BaseModel instance, 
-        Has the key/value pair __class__ representing the object's class name"""
-        res_dict = self.__dict__.copy()
-        res_dict["created_at"] = self.updated_at.isoformat()
-        res_dict["updated_at"] = self.updated_at.isoformat()
-        res_dict["__class__"] = self.__class__.__name__
-        return result_dict
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            from .__init__ import storage
+            storage.new(self)
 
     def __str__(self):
-        """Returns the string rep of the BaseModel instance."""
-        class_name = self.__class__.__name__
-        return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
+        """
+        Str rep when instance is displayed
+        """
+        return f"[{type(self).__name__}] ({self.id}) {self.__dict__}"
+
+    def save(self):
+        """
+        Saves instance's update
+        """
+        self.__dict__.update({'updated_at': datetime.now()})
+        from .__init__ import storage
+        storage.save()
+
+    def to_dict(self):
+        """
+        Returns back a dictionary rep of an instance
+        """
+        instDict = dict(self.__dict__)
+        instDict.update({'__class__': type(self).__name__,
+                        'updated_at': self.updated_at.isoformat(),
+                        'id': self.id,
+                        'created_at': self.created_at.isoformat()})
+        return instDict
