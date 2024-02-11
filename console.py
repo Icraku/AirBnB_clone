@@ -109,7 +109,7 @@ class HBNBConsole(cmd.Cmd):
         none is given, it displays all instantiated objects.
         Usage: <class>.all() or all <class> or all """
         arg_list = parse_arguments(argument)
-        if len(arg_list) > 0 and arg_list[0] not in HBnBCommand.available_classes:
+        if len(arg_list) > 0 and arg_list[0] not in HBnBConsole.available_classes:
             print("** class doesn't exist **")
         else:
             obj_list = []
@@ -129,7 +129,7 @@ class HBNBConsole(cmd.Cmd):
             print("** class name missing **")
         elif len(arg_list) == 1:
             print("** instance id missing **")
-        elif arg_list[0] not in HBnBCommand.available_classes:
+        elif arg_list[0] not in HBnBConsole.available_classes:
             print("** class doesn't exist **")
         elif "{}.{}".format(arg_list[0], arg_list[1]) not in obj_dict.keys():
             print("** no instance found **")
@@ -155,7 +155,7 @@ class HBNBConsole(cmd.Cmd):
         or <class>.update(<id>, <dictionary>)"""
         obj_dict = storage.all()
         arg_list = parse_arguments(argument)
-        if arg_list[0] not in HBnBCommand.available_classes:
+        if arg_list[0] not in HBnBConsole.available_classes:
             print("** class doesn't exist **")
             return False
         elif "{}.{}".format(arg_list[0], arg_list[1]) not in obj_dict.keys():
